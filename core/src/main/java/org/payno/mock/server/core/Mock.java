@@ -1,38 +1,44 @@
 package org.payno.mock.server.core;
 
-import com.google.common.collect.MapMaker;
 import org.joor.Reflect;
 
-import java.util.concurrent.ConcurrentMap;
+import javax.annotation.Nullable;
+import java.util.Optional;
 
-public interface Mock {
-    <T> boolean support(Class<T> tClass);
-    <T> MockProxy<T> create(Class<T> tClass);
+public interface Mock<P extends ProtocolContext<P>> {
+    /**
+     * 创建对应类型的对象
+     *
+     * @param tClass t类
+     * @param spy    间谍
+     * @return {@link MockProxy<T, P>}
+     */
+    <T> MockProxy<T,P> create(Class<T> tClass,@Nullable T spy);
 
-    final class Default implements Mock{
+    <T> MockProxy<T,P> create(T spy);
 
-        ConcurrentMap<Class,Boolean> support = new MapMaker().concurrencyLevel(2)
-                .makeMap();
+    class Default<P extends ProtocolContext<P>> implements Mock<P>{
 
-        @Override
-        public <T> boolean support(Class<T> tClass) {
-            try{
-                Boolean exist = support.get(tClass);
-                if(exist==null){
-                    Reflect.on(tClass).create();
-                }else{
-                    return exist.booleanValue();
-                }
-            }catch (Exception e){
-                support.put(tClass,Boolean.FALSE);
-            }
-            return false;
+        P protocolContext;
+        MockConfigurer<P> mockConfigurer;
+
+        public Default(P protocolContext, MockConfigurer<P> mockConfigurer) {
+            this.protocolContext = protocolContext;
+            this.mockConfigurer = mockConfigurer;
         }
 
         @Override
-        public <T> MockProxy<T> create(Class<T> tClass){
-            return MockProxy.Default.create(
-                    Reflect.on(tClass).create().get());
+        public <T> MockProxy<T, P> create(Class<T> tClass,T spy) {
+            return new MockProxy.Default<T,P>(spy==null?Reflect.on(tClass).create().get():spy)
+                    .inject(protocolContext)
+                    .config(mockConfigurer);
+        }
+
+        @Override
+        public <T> MockProxy<T, P> create(T spy) {
+            return new MockProxy.Default<T,P>(spy)
+                    .inject(protocolContext)
+                    .config(mockConfigurer);
         }
     }
 }
