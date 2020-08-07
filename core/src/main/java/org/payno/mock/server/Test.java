@@ -1,13 +1,15 @@
 package org.payno.mock.server;
 
-import com.qingqing.socialiosvc.proto.activity.SocialiosvcActivityProto;
-
-import java.lang.reflect.Field;
+import org.payno.mock.server.core.ProtocolContextHandler;
+import org.payno.mock.server.support.mvc.RestHttpProtocolContextHandler;
+import org.payno.mock.server.support.mvc.SpringMvcHttpProtocolContext;
+import org.springframework.web.client.RestTemplate;
 
 public class Test {
 
     public static void main(String[] args) throws Exception{
-        Field field = SocialiosvcActivityProto.SocialioSvcActivityListResponse.class.getDeclaredField("activityItems_");
-        System.out.println(field);
+        ProtocolContextHandler<SpringMvcHttpProtocolContext> handler =
+                new RestHttpProtocolContextHandler("null",new RestTemplate());
+        System.out.println(Object.class.isAssignableFrom(int.class));
     }
 }

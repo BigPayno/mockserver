@@ -1,7 +1,7 @@
 package org.payno.mock.server.core;
 
 /**
- * 协议内容
+ * 获取协议上下文的接口
  *
  * @author zhaolei22
  * @date 2020/08/04

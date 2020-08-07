@@ -26,7 +26,12 @@ public class MockFieldSupplier<P extends ProtocolContext<P>> implements FieldSup
 
     @Override
     public Object supplier(P protocolContext, FieldAccessor fieldAccessor) {
-        return mockProxy.create(fieldAccessor.fieldReflect().type(), fieldAccessor.fieldReflect().get()).get();
+        Object spy = fieldAccessor.fieldReflect().get();
+        if(null==spy){
+            return mockProxy.create(fieldAccessor.fieldReflect().type()).get();
+        }else{
+            return mockProxy.create((Object) fieldAccessor.fieldReflect().get()).get();
+        }
     }
 
     @Override

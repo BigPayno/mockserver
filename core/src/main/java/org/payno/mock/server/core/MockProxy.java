@@ -1,6 +1,9 @@
 package org.payno.mock.server.core;
 
+import org.payno.mock.server.core.exception.MockException;
 import org.springframework.lang.NonNull;
+
+import java.io.IOException;
 
 /**
  * 模拟代理,T是将要创建的对象,P是协议内容
@@ -42,6 +45,15 @@ public interface MockProxy<T,P extends ProtocolContext<P>> {
     */
    P getProtocolContext();
 
+   /**
+    * 处理协议上下文
+    *
+    * @param protocolContextHandler 协议内容处理程序
+    * @return {@link MockProxy<T, P>}
+    * @throws MockException 模拟异常
+    */
+   MockProxy<T,P> handleProtocolContext(ProtocolContextHandler<P> protocolContextHandler) throws MockException;
+
 
    class Default<T,P extends ProtocolContext<P>> implements MockProxy<T,P>{
 
@@ -73,6 +85,12 @@ public interface MockProxy<T,P extends ProtocolContext<P>> {
       @Override
       public P getProtocolContext() {
          return protocolContext;
+      }
+
+      @Override
+      public MockProxy<T,P> handleProtocolContext(ProtocolContextHandler<P> protocolContextHandler) throws MockException{
+         protocolContextHandler.handle(getProtocolContext());
+         return this;
       }
    }
 }

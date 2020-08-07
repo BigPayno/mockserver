@@ -11,9 +11,19 @@ import javax.servlet.http.HttpServletResponse;
  * @author zhaolei22
  * @date 2020/08/04
  */
-public interface HttpProtocolContext
-        <REQ extends HttpServletRequest,RES extends HttpServletResponse,P extends HttpProtocolContext<REQ,RES,P>>
+public interface HttpProtocolContext<P extends ProtocolContext<P>>
         extends ProtocolContext<P> {
-    REQ getCurRequest();
-    RES getCurResponse();
+    /**
+     * 得到cur请求
+     *
+     * @return {@link HttpServletRequest}
+     */
+    HttpServletRequest getCurRequest();
+
+    /**
+     * 得到cur响应
+     *
+     * @return {@link HttpServletResponse}
+     */
+    HttpServletResponse getCurResponse();
 }

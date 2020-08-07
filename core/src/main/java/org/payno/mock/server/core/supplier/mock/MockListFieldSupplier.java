@@ -52,7 +52,7 @@ public class MockListFieldSupplier  <P extends ProtocolContext<P>> implements Fi
                 Class<?> itemType = ResolvableType.forField(field)
                         .getGeneric(0).getRawClass();
                 return IntStream.range(0,10)
-                        .mapToObj(index->mockProxy.create(itemType, null).get())
+                        .mapToObj(index->mockProxy.create(itemType).get())
                         .collect(Collectors.toList());
             }
             return Collections.emptyList();

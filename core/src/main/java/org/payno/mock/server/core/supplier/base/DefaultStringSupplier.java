@@ -1,16 +1,14 @@
-package org.payno.mock.server.core.supplier.random;
+package org.payno.mock.server.core.supplier.base;
 
 import org.payno.mock.server.core.FieldAccessor;
 import org.payno.mock.server.core.FieldSupplier;
 import org.payno.mock.server.core.ProtocolContext;
 
-import java.util.Random;
-
-public class RandomIntSupplier<P extends ProtocolContext<P>> implements FieldSupplier<Integer,P> {
+public class DefaultStringSupplier<P extends ProtocolContext<P>> implements FieldSupplier<String,P> {
 
     @Override
     public Class<?> supportField() {
-        return int.class;
+        return String.class;
     }
 
     @Override
@@ -19,12 +17,12 @@ public class RandomIntSupplier<P extends ProtocolContext<P>> implements FieldSup
     }
 
     @Override
-    public Integer supplier(P protocolContext, FieldAccessor fieldAccessor) {
-        return new Random().nextInt();
+    public String supplier(P protocolContext, FieldAccessor fieldAccessor) {
+        return "default mock string value";
     }
 
     @Override
     public int getOrder() {
-        return 1;
+        return 0;
     }
 }

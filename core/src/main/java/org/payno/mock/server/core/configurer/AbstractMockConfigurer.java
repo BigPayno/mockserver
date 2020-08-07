@@ -1,6 +1,5 @@
 package org.payno.mock.server.core.configurer;
 
-import com.google.common.collect.Collections2;
 import org.joor.Reflect;
 import org.payno.mock.server.core.FieldAccessor;
 import org.payno.mock.server.core.FieldSupplier;
@@ -10,6 +9,7 @@ import org.payno.mock.server.core.MockProxy;
 import org.payno.mock.server.core.ProtocolContext;
 import org.springframework.util.CollectionUtils;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -46,6 +46,13 @@ public abstract class AbstractMockConfigurer<P extends ProtocolContext<P>> imple
         fieldSupplierMap.put(supplier.supportField(),supplierSet);
     }
 
+    /**
+     * 找到候选人
+     *
+     * @param protocolContext 协议内容
+     * @param fieldAccessor   字段访问器
+     * @return {@link FieldSupplier<?, P>}
+     */
     FieldSupplier<?,P> findCandidate(P protocolContext, FieldAccessor fieldAccessor){
         Set<FieldSupplier<?,P>> candidates = fieldSupplierMap.get(fieldAccessor.fieldReflect().type());
         if(CollectionUtils.isEmpty(candidates)){
@@ -60,14 +67,6 @@ public abstract class AbstractMockConfigurer<P extends ProtocolContext<P>> imple
     }
 
     /**
-     * 从代理对象中提取所有需要的属性的访问器
-     *
-     * @param proxy 对象
-     * @return {@link List<FieldAccessor>}
-     */
-    abstract List<FieldAccessor> fieldExtract(MockProxy<?, P> proxy);
-
-    /**
      * 选择候选人
      *
      * @param fieldAccessor   字段访问器
@@ -75,6 +74,18 @@ public abstract class AbstractMockConfigurer<P extends ProtocolContext<P>> imple
      * @param candidates      候选人
      * @return {@link FieldSupplier<?, P>}
      */
-    abstract Optional<FieldSupplier<?,P>> selectCandidate(Set<FieldSupplier<?,P>> candidates, P protocolContext, FieldAccessor fieldAccessor);
+    Optional<FieldSupplier<?, P>> selectCandidate(Set<FieldSupplier<?, P>> candidates, P protocolContext, FieldAccessor fieldAccessor) {
+        return candidates.stream()
+                .filter(supplier->supplier.supports(protocolContext, fieldAccessor))
+                .max(Comparator.comparing(FieldSupplier::getOrder));
+    }
 
+    /**
+     * 从代理对象中提取所有需要的属性的访问器
+     *      哪些属性需要进行config
+     *
+     * @param proxy 对象
+     * @return {@link List<FieldAccessor>}
+     */
+    abstract List<FieldAccessor> fieldExtract(MockProxy<?, P> proxy);
 }

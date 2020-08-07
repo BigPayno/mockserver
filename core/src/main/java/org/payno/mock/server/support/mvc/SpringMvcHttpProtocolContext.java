@@ -1,5 +1,6 @@
-package org.payno.mock.server.core.protocol;
+package org.payno.mock.server.support.mvc;
 
+import org.payno.mock.server.core.protocol.HttpProtocolContext;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -12,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
  * @author zhaolei22
  * @date 2020/08/04
  */
-public class SpringMvcHttpProtocolContext implements HttpProtocolContext<HttpServletRequest, HttpServletResponse, SpringMvcHttpProtocolContext> {
+public class SpringMvcHttpProtocolContext implements HttpProtocolContext<SpringMvcHttpProtocolContext> {
     @Override
     public HttpServletRequest getCurRequest() {
         ServletRequestAttributes servletRequestAttributes=
