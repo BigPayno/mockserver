@@ -18,8 +18,7 @@ import java.util.Objects;
  * @author zhaolei22
  * @date 2020/08/07
  */
-public abstract class AbstractHttpProtocolContextHandler implements HttpProtocolContextHandler<SpringMvcHttpProtocolContext>
-{
+public abstract class AbstractHttpProtocolContextHandler implements HttpProtocolContextHandler<SpringMvcHttpProtocolContext> {
 
     @Override
     public void handle(SpringMvcHttpProtocolContext springMvcHttpProtocolContext) throws MockException {
